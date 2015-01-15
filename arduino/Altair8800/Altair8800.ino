@@ -34,6 +34,11 @@ int ALT_D5 = 7;
 int ALT_D6 = 8;
 int ALT_D7 = 9;
 
+int ALT_HLTA  = 10;
+int ALT_STACK = 11;
+int ALT_WO    = 12;
+int ALT_INT   = 13;
+
 int ALT_A0  = 14;
 int ALT_A1  = 15;
 int ALT_A2  = 16;
@@ -51,6 +56,15 @@ int ALT_A13 = 27;
 int ALT_A14 = 28;
 int ALT_A15 = 29;
 
+int ALT_OUT  = 30;
+int ALT_MI   = 31;
+int ALT_INP  = 32;
+int ALT_MEMR = 33;
+int ALT_PROT = 34;
+int ALT_INTE = 35;
+int ALT_HLDA = 36;
+int ALT_WAIT = 37;
+
 // Input pins
 int ALT_STOP         = 53;
 int ALT_RUN          = 52;
@@ -67,6 +81,7 @@ int ALT_AUX1         = 42;
 int ALT_AUX2         = 41;
 int ALT_AUX3         = 40;
 int ALT_AUX4         = 39;
+int ALT_ON           = 38;
 
 int ALT_DA0 = A0;
 int ALT_DA1 = A1;
@@ -100,6 +115,17 @@ int serialInData;
 // the setup routine runs once when you press reset:
 void setup() {  
   // Output pins
+  pinMode(ALT_INTE, OUTPUT);     
+  pinMode(ALT_PROT, OUTPUT);     
+  pinMode(ALT_MEMR, OUTPUT);     
+  pinMode(ALT_INP, OUTPUT);     
+  pinMode(ALT_MI, OUTPUT);     
+  pinMode(ALT_OUT, OUTPUT);     
+  pinMode(ALT_HLTA, OUTPUT);     
+  pinMode(ALT_STACK, OUTPUT);     
+  pinMode(ALT_WO, OUTPUT);     
+  pinMode(ALT_INT, OUTPUT);     
+    
   pinMode(ALT_D0, OUTPUT);     
   pinMode(ALT_D1, OUTPUT);     
   pinMode(ALT_D2, OUTPUT);     
@@ -108,6 +134,10 @@ void setup() {
   pinMode(ALT_D5, OUTPUT);     
   pinMode(ALT_D6, OUTPUT);     
   pinMode(ALT_D7, OUTPUT);     
+
+
+  pinMode(ALT_WAIT, OUTPUT);     
+  pinMode(ALT_HLDA, OUTPUT);     
 
   pinMode(ALT_A0, OUTPUT);     
   pinMode(ALT_A1, OUTPUT);     
@@ -142,6 +172,7 @@ void setup() {
   pinMode(ALT_AUX2, INPUT_PULLUP);     
   pinMode(ALT_AUX3, INPUT_PULLUP);     
   pinMode(ALT_AUX4, INPUT_PULLUP);     
+  pinMode(ALT_ON, INPUT_PULLUP);     
 
   pinMode(ALT_DA0, INPUT_PULLUP);     
   pinMode(ALT_DA1, INPUT_PULLUP);     
@@ -185,6 +216,17 @@ int blinkLED(int led)
 
 void testLED()
 {
+  digitalWrite(ALT_INTE, HIGH);
+  digitalWrite(ALT_PROT, HIGH);
+  digitalWrite(ALT_MEMR, HIGH);
+  digitalWrite(ALT_INP, HIGH);
+  digitalWrite(ALT_MI, HIGH);
+  digitalWrite(ALT_OUT, HIGH);
+  digitalWrite(ALT_HLTA, HIGH);
+  digitalWrite(ALT_STACK, HIGH);
+  digitalWrite(ALT_WO, HIGH);
+  digitalWrite(ALT_INT, HIGH);  
+  
   digitalWrite(ALT_D0, HIGH);
   digitalWrite(ALT_D1, HIGH);
   digitalWrite(ALT_D2, HIGH);
@@ -193,6 +235,9 @@ void testLED()
   digitalWrite(ALT_D5, HIGH);
   digitalWrite(ALT_D6, HIGH);
   digitalWrite(ALT_D7, HIGH);
+
+  digitalWrite(ALT_WAIT, HIGH);  
+  digitalWrite(ALT_HLDA, HIGH);  
 
   digitalWrite(ALT_A0, HIGH);
   digitalWrite(ALT_A1, HIGH);
@@ -212,6 +257,17 @@ void testLED()
   digitalWrite(ALT_A15, HIGH);
   delay(1000);              
 
+  digitalWrite(ALT_INTE, LOW);
+  digitalWrite(ALT_PROT, LOW);
+  digitalWrite(ALT_MEMR, LOW);
+  digitalWrite(ALT_INP, LOW);
+  digitalWrite(ALT_MI, LOW);
+  digitalWrite(ALT_OUT, LOW);
+  digitalWrite(ALT_HLTA, LOW);
+  digitalWrite(ALT_STACK, LOW);
+  digitalWrite(ALT_WO, LOW);
+  digitalWrite(ALT_INT, LOW);  
+
   digitalWrite(ALT_D0, LOW);
   digitalWrite(ALT_D1, LOW);
   digitalWrite(ALT_D2, LOW);
@@ -220,6 +276,10 @@ void testLED()
   digitalWrite(ALT_D5, LOW);
   digitalWrite(ALT_D6, LOW);
   digitalWrite(ALT_D7, LOW);
+
+
+  digitalWrite(ALT_WAIT, LOW);  
+  digitalWrite(ALT_HLDA, LOW);  
 
   digitalWrite(ALT_A0, LOW);
   digitalWrite(ALT_A1, LOW);
@@ -239,6 +299,17 @@ void testLED()
   digitalWrite(ALT_A15, LOW);  
   delay(500);
 
+  blinkLED(ALT_INTE);
+  blinkLED(ALT_PROT);
+  blinkLED(ALT_MEMR);
+  blinkLED(ALT_INP);
+  blinkLED(ALT_MI);
+  blinkLED(ALT_OUT);
+  blinkLED(ALT_HLTA);
+  blinkLED(ALT_STACK);
+  blinkLED(ALT_WO);
+  blinkLED(ALT_INT);
+
   blinkLED(ALT_D7);
   blinkLED(ALT_D6);
   blinkLED(ALT_D5);
@@ -247,6 +318,10 @@ void testLED()
   blinkLED(ALT_D2);
   blinkLED(ALT_D1);
   blinkLED(ALT_D0);
+
+
+  blinkLED(ALT_WAIT);
+  blinkLED(ALT_HLDA);
 
   blinkLED(ALT_A15);
   blinkLED(ALT_A14);
@@ -396,6 +471,11 @@ void modeSwitchTest()
       setLED(ALT_D0, 0x01, 0x01);
     else
       setLED(ALT_D0, 0x00, 0x01);
+
+    if (isOn(ALT_ON))
+      setLED(ALT_INTE, 0x01, 0x01);
+    else
+      setLED(ALT_INTE, 0x00, 0x01);
     
     delay(10);
   }
