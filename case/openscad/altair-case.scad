@@ -5,6 +5,10 @@
 // - bottom/top panels do not have enough holes for east/west panel anchors
 // - fix east panel anchor positions (offsets)
 
+// Original code: 
+// Parametric Box Maker by savorywatt
+// https://www.thingiverse.com/thing:58944
+
 ///////////////////////////////////////////
 // Copyright 2013 Ross Hendrickson
 // BSD - License
