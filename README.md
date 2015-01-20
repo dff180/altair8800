@@ -15,3 +15,6 @@ Recreation of the initial 1975 Altair 8800 microcomputer experience. Uses physic
  * http://simh.trailing-edge.com/ 
 * Erik S. Klein for the helpful front panel scan on his website
  * http://www.vintage-computer.com/altair8800.shtml
+* deramp5113 for his detailed front panel usage videos
+ * https://www.youtube.com/playlist?list=PLB3mwSROoJ4KLWM8KwK0cD1dhX35wILBj
+
