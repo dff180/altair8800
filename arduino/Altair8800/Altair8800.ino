@@ -109,6 +109,9 @@ int serialInPCLow;
 int serialInPCHigh;
 int serialInData;
 
+// state variables
+int stateProtect = 0;
+
 //long lastDebounceTime = 0;  // the last time the output pin was toggled
 //long debounceDelay = 50;    // the debounce time; increase if the output flickers
 
@@ -210,7 +213,7 @@ void setup() {
 int blinkLED(int led)
 {
   digitalWrite(led, HIGH);
-  delay(100);
+  delay(50);
   digitalWrite(led, LOW);
 }
 
@@ -487,39 +490,62 @@ void loop()
 {
   int digitalSwitchState;
 
+  if (isOn(ALT_PROTECT))
+  {
+    stateProtect = 1;
+    setLED(ALT_PROT, 0x01, 0x01);
+  }
+  else if (isOn(ALT_UNPROTECT))
+  {
+    stateProtect = 0;
+    setLED(ALT_PROT, 0x00, 0x01);
+  }
+
   // Check for command switch toggle
   command = CMD_NONE;
-  
+
+/*
   if (isOn(ALT_STOP))
     command = CMD_STOP;
   else if (isOn(ALT_RUN))
     command = CMD_RUN;
-  else if (isOn(ALT_SINGLE_STEP))
+*/
+  if (isOn(ALT_SINGLE_STEP))
     command = CMD_SINGLE_STEP;
   else if (isOn(ALT_EXAMINE))
     command = CMD_EXAMINE;
   else if (isOn(ALT_EXAMINE_NEXT))
     command = CMD_EXAMINE_NEXT;
   else if (isOn(ALT_DEPOSIT))
-    command = CMD_DEPOSIT;
+  {
+    // Don't allow writes when protect switch is on
+    if (stateProtect)
+      return;
+    else
+      command = CMD_DEPOSIT;
+  }
   else if (isOn(ALT_DEPOSIT_NEXT))
-    command = CMD_DEPOSIT_NEXT;
+  {
+    if (stateProtect)
+      command = CMD_EXAMINE_NEXT;
+    else
+      command = CMD_DEPOSIT_NEXT;
+  }
   else if (isOn(ALT_RESET))
     command = CMD_RESET;
-  else if (isOn(ALT_CLR))
-    command = CMD_CLR;
-  else if (isOn(ALT_PROTECT))
-    command = CMD_PROTECT;
-  else if (isOn(ALT_UNPROTECT))
-    command = CMD_UNPROTECT;
+//  else if (isOn(ALT_CLR))
+//    command = CMD_CLR;
 
   // Send commands via serial
-  
   if (command != CMD_NONE)
   {
-    // Write command and wait for response
-    Serial.write(command);
-        
+    // Send main command
+    if (command == CMD_RESET)
+       Serial.write(CMD_EXAMINE); // simulate reset as examine 0x0000
+    else
+       Serial.write(command);
+
+    // Send command specific data
     if (command == CMD_EXAMINE)
     {
       byte low, high;
@@ -529,11 +555,17 @@ void loop()
     }
     else if ((command == CMD_DEPOSIT) || (command == CMD_DEPOSIT_NEXT))
     {
-      byte low, high;
-      getDA(low, high);
-      Serial.write(low);      
+        byte low, high;
+        getDA(low, high);
+        Serial.write(low);
+    }
+    else if (command == CMD_RESET)
+    {
+      Serial.write(0x00);
+      Serial.write(0x00);
     }
     
+    // Wait for response
     while (Serial.available() < 3)
       ;
       
@@ -601,6 +633,12 @@ void loop()
     else if (command == CMD_DEPOSIT_NEXT)
     {
       while (isOn(ALT_DEPOSIT_NEXT))
+        ;
+      delay(debounceWait); // debounce
+    }
+    else if (command == CMD_RESET)
+    {
+      while (isOn(ALT_RESET))
         ;
       delay(debounceWait); // debounce
     }

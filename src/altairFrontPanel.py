@@ -71,7 +71,7 @@ def storeProgramFibonacci():
 	setData(0x0002, 0o000)
 	setData(0x0003, 0o026)	#MVI 0 D
 	setData(0x0004, 0o000)
-	setData(0x0005, 0o036)	#MVI 128 E
+	setData(0x0005, 0o036)	#MVI 128 E, result address
 	setData(0x0006, 0o200)
 	setData(0x0007, 0o076)	#MVI 1 A
 	setData(0x0008, 0o001)
@@ -96,10 +96,10 @@ def storeProgramFibonacci():
 	setData(0x001B, 0o171)	#MOV C A
 	setData(0x001C, 0o376)	#CPI A,0
 	setData(0x001D, 0o000)
-	setData(0x001E, 0o302)	# JNZ
+	setData(0x001E, 0o302)	#JNZ
 	setData(0x001F, 0o022)
 	setData(0x0020, 0o000)
-	setData(0x0021, 0o303)	# JMP
+	setData(0x0021, 0o303)	#JMP
 	setData(0x0022, 0o000)
 	setData(0x0023, 0o000)
 	
